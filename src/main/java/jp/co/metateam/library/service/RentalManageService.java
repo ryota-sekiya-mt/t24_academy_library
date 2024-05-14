@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.el.ELException;
 import jp.co.metateam.library.model.Account;
 import jp.co.metateam.library.model.RentalManage;
 import jp.co.metateam.library.model.RentalManageDto;
@@ -88,4 +89,30 @@ public class RentalManageService {
 
         return rentalManage;
     }
-}
+
+@Transactional 
+    public void update(Long id, RentalManageDto rentalManageDto) throws Exception {
+        try {
+            //既存レコードの取得
+            Account account = this.accountRepository.findByEmployeeId(rentalManageDto.getEmployeeId()).orElse(null);
+            Stock stock = this.stockRepository.findById(rentalManageDto.getStockId()).orElse(null);
+            RentalManage updataTargetRental = findById(id);
+            if(updataTargetRental == null){
+                throw new Exception("RentalManage record not found.");
+            }
+
+            updataTargetRental.setAccount(account);
+            updataTargetRental.setExpectedRentalOn(rentalManageDto.getExpectedRentalOn());
+            updataTargetRental.setExpectedReturnOn(rentalManageDto.getExpectedReturnOn());
+            updataTargetRental.setStatus(rentalManageDto.getStatus());
+            updataTargetRental.setStock(stock);
+
+            // データベースへの保存
+            this.rentalManageRepository.save(updataTargetRental);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    
+
+    }
