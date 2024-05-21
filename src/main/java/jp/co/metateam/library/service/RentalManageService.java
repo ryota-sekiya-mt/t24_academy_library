@@ -47,6 +47,11 @@ public class RentalManageService {
         return this.rentalManageRepository.findById(id).orElse(null);
     }
 
+    @Transactional
+    public List <RentalManage> findByStockIdAndStatus(String newStockId){
+        return this.rentalManageRepository.findByStockIdAndStatus(newStockId);
+    }
+
     @Transactional 
     public void save(RentalManageDto rentalManageDto) throws Exception {
         try {
